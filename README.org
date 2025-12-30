@@ -1,37 +1,72 @@
 * ivy-phpunit
 
-Quick-select your PHP functions in your PHPUnit test classes. This builds off =helm-phpunit='s test function selecting but also provides additional utility.
+Ivy interface for running PHPUnit tests in Emacs. Quickly select and execute test functions or classes using Ivy's fuzzy completion.
+
+** Features
+
+- Select and run individual test functions from the current buffer
+- Run entire test classes with fuzzy matching
+- Quick-switch between test classes across your project
+- Configurable ignore list for setup/teardown methods
+
+** Requirements
+
+- Emacs 25.1 or later
+- [[https://github.com/abo-abo/swiper][ivy]] 0.10.0 or later
+- [[https://github.com/nlamirault/phpunit.el][phpunit.el]] 0.7.0 or later
+
+** Installation
+
+Clone this repository and add it to your load path:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/path/to/ivy-phpunit")
+(require 'ivy-phpunit)
+#+END_SRC
 
 ** Usage
 
-Bind =ivy-phpunit-select-test= to a keybinding and then call from within your test class. Select a method to pass to PHPUnit and presto - your test will be run.
+Add keybindings to your PHP mode configuration:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'php-mode-hook (lambda ()
-                           (local-set-key (kbd "C-x t") 'ivy-phpunit-test-function)
-                           (local-set-key (kbd "C-x c") 'ivy-phpunit-test-class)
-                           (local-set-key (kbd "C-x C") 'ivy-phpunit-list-test-classes)))
+(add-hook 'php-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-x t") 'ivy-phpunit-test-function)
+            (local-set-key (kbd "C-x c") 'ivy-phpunit-test-class)
+            (local-set-key (kbd "C-x C") 'ivy-phpunit-list-test-classes)))
 #+END_SRC
 
-=ivy-phpunit-test-class= and =ivy-phpunit-list-test-classes= can be called anywhere in the current PHP project; for now =ivy-phpunit-test-function= is just for running tests in the current buffer (i.e. a test you're editing).
+*** Commands
 
-** Customize
-*** Ignored test functions
+| Command                        | Description                                          |
+|--------------------------------+------------------------------------------------------|
+| =ivy-phpunit-test-function=    | Select and run a test function from the current buffer |
+| =ivy-phpunit-test-class=       | Select and run all tests in a class                  |
+| =ivy-phpunit-list-test-classes= | Browse and open test classes in your project         |
 
-Currently you can select or deselect test functions to not be listed in the prompt - default is to not list =setUp= and =tearDown=.
+** Configuration
 
-Changing this outside of =M-x customize= is as simple as:
+*** Ignored Functions
+
+By default, =setUp= and =tearDown= methods are excluded from the function list. Customize this with:
 
 #+BEGIN_SRC emacs-lisp
-(setq ivy-phpunit-ignorelist '("myIgnoredFunction"))
+(setq ivy-phpunit-ignorelist '("setUp" "tearDown" "setUpBeforeClass"))
 #+END_SRC
 
-Obviously to ignore nothing, pass an empty list.
+To show all functions, set an empty list:
 
-** Credit
+#+BEGIN_SRC emacs-lisp
+(setq ivy-phpunit-ignorelist '())
+#+END_SRC
 
-+ =abo-abo= - [[https://github.com/abo-abo/swiper][ivy/swiper]]
-+ =eric-hansen= - [[https://github.com/eric-hansen/helm-phpunit][helm-phpunit]]
-+ =nlamirault= - [[https://github.com/nlamirault/phpunit.el][phpunit.el]]
+** Credits
 
-And obviously [[https://phpunit.de][PHPUnit]].
+- [[https://github.com/abo-abo/swiper][ivy/swiper]] by abo-abo
+- [[https://github.com/eric-hansen/helm-phpunit][helm-phpunit]] by eric-hansen
+- [[https://github.com/nlamirault/phpunit.el][phpunit.el]] by nlamirault
+- [[https://phpunit.de][PHPUnit]]
+
+** License
+
+GPL-3.0
